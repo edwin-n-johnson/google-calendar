@@ -30,7 +30,9 @@ def main():
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
     # Use the Calendar events object to retreive the events
-    events_result = service.events().list(calendarId='primary', timeMin=now,
+    #calId = 'primary'
+    calId = 'ins31cvsv7fcmeu9s8ahnsc60c@group.calendar.google.com'
+    events_result = service.events().list(calendarId=calId, timeMin=now,
                                           maxResults=10, singleEvents=True,
                                           orderBy='startTime').execute()
     events = events_result.get('items', [])
