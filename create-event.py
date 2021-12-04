@@ -4,6 +4,7 @@ import pickle
 import os.path
 import sys
 import pprint
+import argparse
 from googleapiclient.discovery import build
 
 PICKLE = 'token.pickle'
@@ -28,22 +29,36 @@ def main():
     # Get the Google Calendar service object
     service = build('calendar', 'v3', credentials=creds)
 
+    # Parse the args
+    parser = argparse.ArgumentParser()
+    parser.add_argument("title")
+    parser.add_argument("when")
+    args = parser.parse_args()
+
+    # Handle title
+    summary = args.title
+
+    # Handle when
+    when = datetime.datetime.strptime(args.when, "%m-%d-%Y")
+    when = str(when.date())
+
     # Call the Calendar API
-    now = datetime.datetime.utcnow() # Use UTC so we don't have to worry about timezones
-    start = now + datetime.timedelta(hours=1) # Start an hour from now
-    end   = start + datetime.timedelta(hours=3) # 3 hours of skiing
-    print('Creating an event to go skiing in 1 hour')
+    print('Creating an event {} on {}'.format(summary, when))
     new_event = {
-        'summary': 'Go skiing!',
+        'summary': summary,
         'start': {
-            'dateTime': start.isoformat() + 'Z' # 'Z' indicates UTC time
+            'date': when
         },
         'end': {
-            'dateTime': end.isoformat() + 'Z' # 'Z' indicates UTC time
-        }
+            'date': when
+        },
+        'transparency': "transparent"
     }
     # Use the Calendar events object to insert a new event
-    result = service.events().insert(calendarId='primary', body=new_event).execute()
+    #calId = 'primary'
+    calId = 'ins31cvsv7fcmeu9s8ahnsc60c@group.calendar.google.com'
+    result = service.events().insert(calendarId=calId, body=new_event).execute()
+    print()
     pprint.pprint(result)
     if result:
         print('Event created successfully')
