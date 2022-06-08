@@ -31,35 +31,33 @@ def main():
 
     # Parse the args
     parser = argparse.ArgumentParser()
-    parser.add_argument("what")
+    parser.add_argument("title")
     parser.add_argument("when")
-    parser.add_argument("duration")
     args = parser.parse_args()
 
-    # Handle when
-    when_start = datetime.datetime.strptime(args.start, "%m-%d-%Y")
-    when_end = when_start + int(args.duration)
-    when_start = str(when_start.date())
-    when_end = str(when_end.date())
+    # Handle title
+    summary = args.title
 
-    summary = args.what
+    # Handle when
+    when = datetime.datetime.strptime(args.when, "%m-%d-%Y")
+    when = str(when.date())
 
     # Call the Calendar API
-    print('Creating an event {} from {} - {}'.format(args.what, when_start, when_end))
+    print('Creating an event {} on {}'.format(summary, when))
     new_event = {
         'summary': summary,
         'start': {
-            'date': when_start
+            'date': when
         },
         'end': {
-            'date': when_end
+            'date': when
         },
         'transparency': "transparent"
     }
     # Use the Calendar events object to insert a new event
     # calId = 'primary'
-    cal_id = 'ins31cvsv7fcmeu9s8ahnsc60c@group.calendar.google.com'
-    result = service.events().insert(calendarId=cal_id, body=new_event).execute()
+    calid = 'ins31cvsv7fcmeu9s8ahnsc60c@group.calendar.google.com'
+    result = service.events().insert(calendarId=calid, body=new_event).execute()
     print()
     pprint.pprint(result)
     if result:
